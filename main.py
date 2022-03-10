@@ -5,11 +5,11 @@ from random import randint
 
 pygame.init()
 
-pygame.mixer.music.set_volume(0.2)
-music_thema = pygame.mixer.music.load('BoxCat Games - CPU Talk.mp3')
+pygame.mixer.music.set_volume(0.4)
+music_thema = pygame.mixer.music.load('sounds/BoxCat Games - CPU Talk.mp3')
 pygame.mixer.music.play(-1)
 
-sound_colision = pygame.mixer.Sound('smw_jump.wav')
+sound_colision = pygame.mixer.Sound('sounds/smw_jump.wav')
 
 largura = 640
 altura = 480
@@ -17,6 +17,7 @@ altura = 480
 x_cobra , y_cobra = largura/2 - 20 , altura/2 - 20
 
 velocity = 5
+
 x_controler = velocity
 y_controler = 0
 
@@ -42,7 +43,7 @@ def big_snake(list_snake):
         pygame.draw.rect(screen, (0,255,0), (XeY[0], XeY[1], 20, 20))
         
 def restart_game():
-    global points, len_init_snake, x_cobra, y_cobra, list_snake, head_snake, x_maca, y_maca, death
+    global points, len_init_snake, x_cobra, y_cobra, list_snake, head_snake, x_maca, y_maca, death, velocity
     points = 0
     len_init_snake = 5
     x_cobra = int(largura/2) 
@@ -51,6 +52,7 @@ def restart_game():
     head_snake = []
     x_maca = randint(40, 600)
     y_maca = randint(50, 430)
+    velocity = 5
     death = False
 
 while True:
@@ -67,16 +69,16 @@ while True:
             exit()
             
         if event.type == KEYDOWN:
-            if event.key == K_a and x_controler != velocity:
+            if event.key == K_LEFT and x_controler != velocity:
                 x_controler = -velocity
                 y_controler = 0
-            if event.key == K_d and x_controler != -velocity:
+            if event.key == K_RIGHT and x_controler != -velocity:
                 x_controler = velocity
                 y_controler = 0
-            if event.key == K_w and y_controler != velocity:
+            if event.key == K_UP and y_controler != velocity:
                 y_controler = -velocity
                 x_controler = 0
-            if event.key == K_s and y_controler != -velocity:
+            if event.key == K_DOWN and y_controler != -velocity:
                 y_controler = velocity
                 x_controler = 0
                 
@@ -84,7 +86,7 @@ while True:
     y_cobra += y_controler
     
     cobra = pygame.draw.rect(screen, (0,255,0), (x_cobra, y_cobra, 20, 20))
-    maca = pygame.draw.rect(screen, (255,0,0), (x_maca, y_maca, 20, 20))
+    maca = pygame.draw.rect(screen, (255,0,0), (x_maca, y_maca, 15, 15))
     
     if cobra.colliderect(maca):
         pygame.mixer.music.play()
@@ -106,17 +108,17 @@ while True:
         if points == 40:
             velocity += 2
         if points == 50:
-            velocity += 3
+            velocity += 2
         if points == 60:
-            velocity += 3
+            velocity += 1
         if points == 70:
-            velocity += 3
+            velocity += 1
         if points == 80:
-            velocity += 4
+            velocity += 1
         if points == 90:
-            velocity += 4
+            velocity += 1
         if points == 100:
-            velocity += 5
+            velocity += 1
         
     head_snake = []
     head_snake.append(x_cobra)
@@ -124,13 +126,13 @@ while True:
     
     list_snake.append(head_snake)
     
-    if x_cobra > largura:
+    if x_cobra > largura-3:
         x_cobra = 0
-    elif x_cobra < 0:
+    elif x_cobra < 0+3:
         x_cobra = largura
-    elif y_cobra < 0:
+    elif y_cobra < 0+3:
         y_cobra = altura
-    elif y_cobra > altura:
+    elif y_cobra > altura-3:
         y_cobra = 0
         
     if len(list_snake) > len_init_snake:
@@ -157,8 +159,10 @@ while True:
             center_over.center = (largura//2, altura//2)
             screen.blit(game_over_final, center_over)
             pygame.display.update()
+            
     big_snake(list_snake)
     
     screen.blit(msg_final_score, (480,10))
     screen.blit(msg_final_high_score, (480,50))
+    
     pygame.display.update()
